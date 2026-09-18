@@ -8,6 +8,6 @@
   "contact": {},
   "license": "CC0-1.0",
   "environment": "*",
-  "entrypoints": { "main": ["com.cherrybees.CherryBeesMod"] },
+  "entrypoints": { "main": ["com.cherrybees.CherryBeesMod"], "client": ["com.cherrybees.CherryBeesModClient"] },
   "depends": { "fabricloader": ">=0.19.0", "minecraft": "~1.21.11", "fabric-api": "*" }
 }
