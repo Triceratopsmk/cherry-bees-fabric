@@ -22,10 +22,14 @@ public class CherryBeesMod implements ModInitializer {
     private static final RegistryKey<ItemGroup> SPAWN_EGGS_GROUP =
             RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of("minecraft", "spawn_eggs"));
 
+    private static final Identifier CHERRY_BEE_SPAWN_EGG_ID = Identifier.of(MOD_ID, "cherry_bee_spawn_egg");
+
     public static final Item CHERRY_BEE_SPAWN_EGG = Registry.register(
             Registries.ITEM,
-            Identifier.of(MOD_ID, "cherry_bee_spawn_egg"),
-            new SpawnEggItem(new Item.Settings().spawnEgg(EntityType.BEE)));
+            CHERRY_BEE_SPAWN_EGG_ID,
+            new SpawnEggItem(new Item.Settings()
+                    .registryKey(RegistryKey.of(RegistryKeys.ITEM, CHERRY_BEE_SPAWN_EGG_ID))
+                    .spawnEgg(EntityType.BEE)));
 
     @Override
     public void onInitialize() {
