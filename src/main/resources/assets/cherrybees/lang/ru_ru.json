@@ -1,3 +1,6 @@
 {
-  "item.cherrybees.cherry_bee_spawn_egg": "Яйцо призыва вишнёвой пчелы"
+  "item.cherrybees.cherry_bee_spawn_egg": "Яйцо призыва вишнёвой пчелы",
+  "entity.cherrybees.cherry_bee": "Вишнёвая пчела",
+  "item.cherrybees.purple_honey_bottle": "Бутылка фиолетового мёда",
+  "effect.cherrybees.giant": "Гигант"
 }
