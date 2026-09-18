@@ -9,6 +9,5 @@
   "license": "CC0-1.0",
   "environment": "*",
   "entrypoints": { "main": ["com.cherrybees.CherryBeesMod"] },
-  "depends": { "fabricloader": ">=0.19.0", "minecraft": "~1.21.11" }
+  "depends": { "fabricloader": ">=0.19.0", "minecraft": "~1.21.11", "fabric-api": "*" }
 }
-
