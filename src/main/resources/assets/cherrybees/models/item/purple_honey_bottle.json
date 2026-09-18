@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "cherrybees:item/purple_honey_bottle"
+  }
+}
+
