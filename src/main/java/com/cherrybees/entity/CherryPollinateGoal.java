@@ -44,7 +44,7 @@ public class CherryPollinateGoal extends Goal {
             return false;
         }
         BlockPos pos = this.bee.getFlowerPos();
-        return pos != null && isPetals(this.bee.getWorld(), pos);
+        return pos != null && isPetals(this.bee.getEntityWorld(), pos);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class CherryPollinateGoal extends Goal {
     }
 
     private BlockPos findNearestPetals() {
-        World world = this.bee.getWorld();
+        World world = this.bee.getEntityWorld();
         BlockPos center = this.bee.getBlockPos();
         BlockPos closest = null;
         double closestDistanceSq = Double.MAX_VALUE;
@@ -105,4 +105,3 @@ public class CherryPollinateGoal extends Goal {
         return closest;
     }
 }
-
