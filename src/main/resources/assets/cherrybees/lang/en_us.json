@@ -2,5 +2,6 @@
   "item.cherrybees.cherry_bee_spawn_egg": "Cherry Bee Spawn Egg",
   "entity.cherrybees.cherry_bee": "Cherry Bee",
   "item.cherrybees.purple_honey_bottle": "Purple Honey Bottle",
-  "effect.cherrybees.giant": "Giant"
+  "effect.cherrybees.giant": "Giant",
+  "block.cherrybees.cherry_beehive": "Cherry Beehive"
 }
