@@ -4,6 +4,9 @@ import com.cherrybees.entity.CherryBeeEntity;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.BeehiveBlock;
+import net.minecraft.block.Block;
 import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.ConsumableComponents;
 import net.minecraft.component.type.FoodComponent;
@@ -15,6 +18,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.passive.BeeEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -26,6 +30,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +43,8 @@ public class CherryBeesMod implements ModInitializer {
             RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of("minecraft", "spawn_eggs"));
     private static final RegistryKey<ItemGroup> FOOD_AND_DRINK_GROUP =
             RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of("minecraft", "food_and_drink"));
+    private static final RegistryKey<ItemGroup> FUNCTIONAL_GROUP =
+            RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of("minecraft", "functional"));
 
     private static final RegistryKey<EntityType<?>> CHERRY_BEE_KEY =
             RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(MOD_ID, "cherry_bee"));
@@ -92,6 +99,22 @@ public class CherryBeesMod implements ModInitializer {
                     .useRemainder(Items.GLASS_BOTTLE)
                     .food(PURPLE_HONEY_FOOD, PURPLE_HONEY_CONSUMABLE)));
 
+    private static final Identifier CHERRY_BEEHIVE_ID = Identifier.of(MOD_ID, "cherry_beehive");
+
+    public static final Block CHERRY_BEEHIVE = Registry.register(
+            Registries.BLOCK,
+            CHERRY_BEEHIVE_ID,
+            new BeehiveBlock(AbstractBlock.Settings.create()
+                    .registryKey(RegistryKey.of(RegistryKeys.BLOCK, CHERRY_BEEHIVE_ID))
+                    .strength(0.6F)
+                    .sounds(BlockSoundGroup.WOOD)));
+
+    public static final Item CHERRY_BEEHIVE_ITEM = Registry.register(
+            Registries.ITEM,
+            CHERRY_BEEHIVE_ID,
+            new BlockItem(CHERRY_BEEHIVE, new Item.Settings()
+                    .registryKey(RegistryKey.of(RegistryKeys.ITEM, CHERRY_BEEHIVE_ID))));
+
     @Override
     public void onInitialize() {
         FabricDefaultAttributeRegistry.register(CHERRY_BEE, BeeEntity.createBeeAttributes());
@@ -104,6 +127,10 @@ public class CherryBeesMod implements ModInitializer {
             entries.add(new ItemStack(PURPLE_HONEY_BOTTLE));
         });
 
-        LOGGER.info("Cherry Bees loaded - pink bees pollinate cherry blossoms, purple honey makes you a giant!");
+        ItemGroupEvents.modifyEntriesEvent(FUNCTIONAL_GROUP).register(entries -> {
+            entries.add(new ItemStack(CHERRY_BEEHIVE_ITEM));
+        });
+
+        LOGGER.info("Cherry Bees loaded - cherry bees are a separate species with their own pink hive, and pollinate only fallen cherry petals!");
     }
 }
