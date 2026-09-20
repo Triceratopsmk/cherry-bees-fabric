@@ -3,5 +3,7 @@
   "entity.cherrybees.cherry_bee": "Cherry Bee",
   "item.cherrybees.purple_honey_bottle": "Purple Honey Bottle",
   "effect.cherrybees.giant": "Giant",
-  "block.cherrybees.cherry_beehive": "Cherry Beehive"
+  "block.cherrybees.cherry_beehive": "Cherry Beehive",
+  "entity.cherrybees.wild_boar": "Wild Boar",
+  "item.cherrybees.wild_boar_spawn_egg": "Wild Boar Spawn Egg"
 }
