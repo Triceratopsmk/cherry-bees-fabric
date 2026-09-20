@@ -1,12 +1,14 @@
 package com.cherrybees;
 
 import com.cherrybees.entity.CherryBeeEntity;
+import com.cherrybees.entity.WildBoarEntity;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.Block;
@@ -15,12 +17,14 @@ import net.minecraft.component.type.ConsumableComponents;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.SpawnLocationTypes;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.passive.BeeEntity;
+import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -33,8 +37,11 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.BiomeTags;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.SpawnSettings;
 import org.slf4j.Logger;
@@ -120,12 +127,43 @@ public class CherryBeesMod implements ModInitializer {
             new BlockItem(CHERRY_BEEHIVE, new Item.Settings()
                     .registryKey(RegistryKey.of(RegistryKeys.ITEM, CHERRY_BEEHIVE_ID))));
 
+    private static final RegistryKey<EntityType<?>> WILD_BOAR_KEY =
+            RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(MOD_ID, "wild_boar"));
+
+    public static final EntityType<WildBoarEntity> WILD_BOAR = Registry.register(
+            Registries.ENTITY_TYPE,
+            WILD_BOAR_KEY,
+            FabricEntityType.Builder.createMob(
+                            WildBoarEntity::new,
+                            SpawnGroup.CREATURE,
+                            mob -> mob.spawnRestriction(
+                                            SpawnLocationTypes.ON_GROUND,
+                                            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+                                            (type, world, reason, pos, random) ->
+                                                    world.getBlockState(pos.down()).isIn(BlockTags.ANIMALS_SPAWNABLE_ON)
+                                                            && world.getBaseLightLevel(pos, 0) > 8)
+                                    .defaultAttributes(PigEntity::createPigAttributes))
+                    .dimensions(0.9F, 0.9F)
+                    .maxTrackingRange(10)
+                    .trackingTickInterval(3)
+                    .build(WILD_BOAR_KEY));
+
+    private static final Identifier WILD_BOAR_SPAWN_EGG_ID = Identifier.of(MOD_ID, "wild_boar_spawn_egg");
+
+    public static final Item WILD_BOAR_SPAWN_EGG = Registry.register(
+            Registries.ITEM,
+            WILD_BOAR_SPAWN_EGG_ID,
+            new SpawnEggItem(new Item.Settings()
+                    .registryKey(RegistryKey.of(RegistryKeys.ITEM, WILD_BOAR_SPAWN_EGG_ID))
+                    .spawnEgg(WILD_BOAR)));
+
     @Override
     public void onInitialize() {
         FabricDefaultAttributeRegistry.register(CHERRY_BEE, BeeEntity.createBeeAttributes());
 
         ItemGroupEvents.modifyEntriesEvent(SPAWN_EGGS_GROUP).register(entries -> {
             entries.add(new ItemStack(CHERRY_BEE_SPAWN_EGG));
+            entries.add(new ItemStack(WILD_BOAR_SPAWN_EGG));
         });
 
         ItemGroupEvents.modifyEntriesEvent(FOOD_AND_DRINK_GROUP).register(entries -> {
@@ -148,6 +186,15 @@ public class CherryBeesMod implements ModInitializer {
                                     10);
                         });
 
-        LOGGER.info("Cherry Bees loaded - cherry bees are a separate species with their own pink hive, and pollinate only fallen cherry petals!");
+        // Wild boars roam forest biomes as an additional passive mob, alongside vanilla animals.
+        BiomeModifications.create(Identifier.of(MOD_ID, "wild_boar_spawns"))
+                .add(ModificationPhase.ADDITIONS,
+                        BiomeSelectors.tag(BiomeTags.IS_FOREST),
+                        context -> context.getSpawnSettings().addSpawn(
+                                SpawnGroup.CREATURE,
+                                new SpawnSettings.SpawnEntry(WILD_BOAR, 2, 4),
+                                8));
+
+        LOGGER.info("Cherry Bees loaded - cherry bees are a separate species with their own pink hive, pollinate only fallen cherry petals, and wild boars now roam the forests!");
     }
 }
