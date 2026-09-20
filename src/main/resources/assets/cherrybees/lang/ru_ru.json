@@ -3,5 +3,7 @@
   "entity.cherrybees.cherry_bee": "Вишнёвая пчела",
   "item.cherrybees.purple_honey_bottle": "Бутылка фиолетового мёда",
   "effect.cherrybees.giant": "Гигант",
-  "block.cherrybees.cherry_beehive": "Вишнёвый улей"
+  "block.cherrybees.cherry_beehive": "Вишнёвый улей",
+  "entity.cherrybees.wild_boar": "Дикий кабан",
+  "item.cherrybees.wild_boar_spawn_egg": "Яйцо призыва дикого кабана"
 }
