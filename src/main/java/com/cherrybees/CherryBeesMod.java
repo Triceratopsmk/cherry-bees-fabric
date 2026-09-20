@@ -2,6 +2,9 @@ package com.cherrybees;
 
 import com.cherrybees.entity.CherryBeeEntity;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.block.AbstractBlock;
@@ -32,6 +35,8 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.SpawnSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,6 +135,18 @@ public class CherryBeesMod implements ModInitializer {
         ItemGroupEvents.modifyEntriesEvent(FUNCTIONAL_GROUP).register(entries -> {
             entries.add(new ItemStack(CHERRY_BEEHIVE_ITEM));
         });
+
+        // Cherry groves get cherry bees instead of normal bees; every other biome keeps vanilla bees untouched.
+        BiomeModifications.create(Identifier.of(MOD_ID, "cherry_grove_bees"))
+                .add(ModificationPhase.REPLACEMENTS,
+                        BiomeSelectors.includeByKey(BiomeKeys.CHERRY_GROVE),
+                        context -> {
+                            context.getSpawnSettings().removeSpawnsOfEntityType(EntityType.BEE);
+                            context.getSpawnSettings().addSpawn(
+                                    SpawnGroup.CREATURE,
+                                    new SpawnSettings.SpawnEntry(CHERRY_BEE, 2, 3),
+                                    10);
+                        });
 
         LOGGER.info("Cherry Bees loaded - cherry bees are a separate species with their own pink hive, and pollinate only fallen cherry petals!");
     }
